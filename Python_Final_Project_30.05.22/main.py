@@ -4,13 +4,21 @@ import sys
 from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import *
 from AnasayfaUI import *
+from login_pythonUI import *
 #----------------------UYGULAMA OLUŞTURMA----------------------#
 #--------------------------------------------------------------#
 Uygulama=QApplication(sys.argv)
 penAna=QMainWindow()
 ui=Ui_MainWindow()
 ui.setupUi(penAna)
-penAna.show()
+#penAna.show()
+#----------------------------
+
+ilkpen = QWidget()
+ui2=Ui_Form()
+ui2.setupUi(ilkpen)
+ilkpen.show()
+
 #----------------------VERİTABANI OLUŞTURMA----------------------#
 #--------------------------------------------------------------#
 import sqlite3
@@ -42,7 +50,12 @@ conn.commit()
 #------------------------------------------------------------#
 
 def EKLE():
-    _kimlik = ui.txt_Kimlik.text()
+    try:
+        kimlikkont =int(ui.txt_Kimlik.text())
+        _kimlik = kimlikkont
+    except Exception as Hata:
+        QMessageBox.critical(penAna,"Hata","Şöyle bir hata ile karşılaşıldı : " + str(Hata))
+
     _isim =ui.txt_Isim.text()
     _soyisim = ui.txt_Soyisim.text()
     _dogumtarihi=ui.cmb_Gun.currentText()+ui.cmb_Ay.currentText()+ui.cmb_Yil.currentText()
@@ -143,8 +156,8 @@ def ARA():
     aranan2=ui.txt_Isim.text()
     aranan3=ui.txt_Soyisim.text()
     aranan4=ui.txt_Id.text()
-    curs.execute("SELECT * FROM Tablo WHERE TCNO=?  OR İSİM=? OR SOYİSİM=? OR (İSİM=? AND SOYİSİM=?)OR ID=?", \
-                 (aranan1,aranan2,aranan3,aranan2,aranan3,aranan4))
+    curs.execute("SELECT * FROM Tablo WHERE İSİM=?  OR  ID=?", \
+                 (aranan2,aranan4))
     conn.commit()
     ui.Tablo.clear()
     for satirIndeks,satirVeri in enumerate(curs):
@@ -203,15 +216,21 @@ def GUNCELLE():
                          MEDENİ_HAL=?,ASKERLİK=?,EHLİYET=?,EĞİTİM=?,DEPARTMAN=?,CALISMA_SAATİ=?,MAAS=?,EPOSTA=?,TEL=?,ADRES=? WHERE ID=?", \
                          (_kimlik,_isim,_soyisim,_dogumtarihi,_cinsiyet,_medenihal,_askerlik,_ehliyet,_ogrenim,_departman,_calismasaat,_maas,_eposta,_telno,_adres,_Id))
             conn.commit()
-
             LİSTELE()
 
         except Exception as Hata:
             ui.statusbar.showMessage("Şöyle bir hata meydana geldi "+str(Hata))
     else:
         ui.statusbar.showMessage("Güncelleme iptal edildi",10000)
+#----------------------------GİRİS--------------------------#
+#------------------------------------------------------------#
 
-
+def GIRIS():
+    if ui2.txt_kullanici_adi.text() == "1" and ui2.txt_sifre.text() == "1":
+        ilkpen.close()
+        penAna.show()
+    else:
+        QMessageBox.critical(ilkpen,"Hata","Kullanıcı adı veya şifre yanlış.")
 #----------------------------SİNYAL-SLOT--------------------------#
 #------------------------------------------------------------#
 ui.btn_Kayit_Ekle.clicked.connect(EKLE)
@@ -220,7 +239,7 @@ ui.btn_Cikis.clicked.connect(CIKIS)
 ui.btn_Kayit_Sil.clicked.connect(SIL)
 ui.btn_Kayit_Ara.clicked.connect(ARA)
 ui.btn_Guncelle.clicked.connect(GUNCELLE)
-
+ui2.btn_giris.clicked.connect(GIRIS)
 
 
 sys.exit(Uygulama.exec_())
