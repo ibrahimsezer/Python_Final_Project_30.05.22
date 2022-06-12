@@ -1132,7 +1132,7 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "Personel Bilgi Sistemi"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.label.setText(_translate("MainWindow", "ID"))
         self.cmb_Egitim.setItemText(0, _translate("MainWindow", "İlkokul"))
         self.cmb_Egitim.setItemText(1, _translate("MainWindow", "Ortaokul"))
